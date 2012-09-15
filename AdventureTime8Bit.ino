@@ -59,7 +59,19 @@ int noteDurations[] = {
   };
 
 void finnWink() {
-  TV.set_pixel(32, 21, 2); //Invert
+  togglePixel(32, 22); 
+}
+
+void finnTongue() {
+  //Make him stick out his tongue
+  togglePixel(26, 28);
+  togglePixel(28, 28);
+  togglePixel(26, 29);
+  togglePixel(27, 29);
+}
+
+void togglePixel(int x, int y) {
+  TV.set_pixel(x, y - 1, 2); //Toggle pixel. Messing with X since my image editor coordinates are off by one, boo
 }
 
 void setup() {
@@ -93,9 +105,8 @@ void setup() {
     //Stuff we only want done on the first loop, if the music is looping
     if (!finnHasWinked) {
       finnHasWinked = true;
-      finnWink();
+      finnTongue();
       TV.delay(1000);
-      finnWink();
     }
     if (!hasSmiled) {
       hasSmiled = true;
