@@ -33,7 +33,7 @@ void setup() {
   TV.set_cursor(0, 65);
   TV.print("Music time!");
   do {
-    for (int thisNote = 0; thisNote < 9; thisNote++) {
+    for (int thisNote = 0; thisNote < sizeof(mIntro) / sizeof(int); thisNote++) {
   
       // to calculate the note duration, take one second 
       // divided by the note type.
@@ -72,7 +72,7 @@ void setup() {
   TV.delay(2500);
   TV.println("My schematic:");
   TV.delay(1500);
-  TV.bitmap(0,0,schematic);
+  //TV.bitmap(0,0,schematic);
   TV.delay(10000);
   TV.clear_screen();
   TV.println("Lets see what\nwhat I can do");
