@@ -2,6 +2,7 @@
 #include <fontALL.h>
 #include "schematic.h"
 #include "TVOlogo.h"
+#include "Finn.h"
 #include "pitches.h"
 
 TVout TV;
@@ -57,14 +58,22 @@ int noteDurations[] = {
   1
   };
 
+void finnWink() {
+  TV.set_pixel(32, 21, 2); //Invert
+}
 
 void setup() {
+  static bool hasSmiled = false;
+  static bool finnHasWinked = false;
+  bool loopMusic = false;
   TV.begin(NTSC,120,96);
   TV.select_font(font6x8);
   //intro();
-  TV.println("Music time! :)\n");
-  TV.delay(2500);
-  while(1) {
+  TV.bitmap(0, 0, Finn);
+  TV.delay(6000);
+  TV.set_cursor(0, 65);
+  TV.print("Music time!");
+  do {
     for (int thisNote = 0; thisNote < 9; thisNote++) {
   
       // to calculate the note duration, take one second 
@@ -79,9 +88,27 @@ void setup() {
       TV.delay(pauseBetweenNotes);
       // stop the tone playing:
       TV.noTone();
+    } while (loopMusic);
+    
+    //Stuff we only want done on the first loop, if the music is looping
+    if (!finnHasWinked) {
+      finnHasWinked = true;
+      finnWink();
+      TV.delay(1000);
+      finnWink();
     }
+    if (!hasSmiled) {
+      hasSmiled = true;
+      TV.println(" :)");
+    }
+    
     TV.delay(2500);
-  }
+  } while (loopMusic);
+  
+  //Stop doing stuff, loop forever!
+  while (1);
+  
+  
   TV.clear_screen();
   TV.println("I generate a PAL\nor NTSC composite  video using\ninterrupts\n");
   TV.delay(2500);
