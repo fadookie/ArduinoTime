@@ -2,6 +2,7 @@
 #include <fontALL.h>
 #include "schematic.h"
 #include "TVOlogo.h"
+#include "pitches.h"
 
 TVout TV;
 
@@ -11,6 +12,8 @@ int yOff = 0;
 int cSize = 50;
 int view_plane = 64;
 float angle = PI/60;
+const byte audioPin = 8;
+#define TONE(f, d) tone(audioPin, f, d)
 
 float cube3d[8][3] = {
   {xOff - cSize,yOff + cSize,zOff - cSize},
@@ -25,12 +28,61 @@ float cube3d[8][3] = {
 unsigned char cube2d[8][2];
 
 
+int mIntro[] = {
+  //intro
+  NOTE_G5,
+  NOTE_D5,
+  NOTE_C5,
+  NOTE_D5,
+  //REST,
+  NOTE_G5,
+  NOTE_D5,
+  NOTE_C5,
+  NOTE_D5,
+  NOTE_G5
+  
+  };
+  
+  // note durations: 4 = quarter note, 8 = eighth note, etc.:
+int noteDurations[] = {
+  1,
+  1,
+  1,
+  1,
+  //1,
+  1,
+  1,
+  1,
+  1,
+  1
+  };
+
+
 void setup() {
   TV.begin(NTSC,120,96);
   TV.select_font(font6x8);
-  intro();
-  TV.println("I am the TVout\nlibrary running on a freeduino\n");
+  //intro();
+  TV.println("Music time! :)\n");
   TV.delay(2500);
+  while(1) {
+    for (int thisNote = 0; thisNote < 9; thisNote++) {
+  
+      // to calculate the note duration, take one second 
+      // divided by the note type.
+      //e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.
+      int noteDuration = 1500/noteDurations[thisNote];
+      TV.tone(mIntro[thisNote],noteDuration);
+  
+      // to distinguish the notes, set a minimum time between them.
+      // the note's duration + 30% seems to work well:
+      int pauseBetweenNotes = noteDuration * 1.30;
+      TV.delay(pauseBetweenNotes);
+      // stop the tone playing:
+      TV.noTone();
+    }
+    TV.delay(2500);
+  }
+  TV.clear_screen();
   TV.println("I generate a PAL\nor NTSC composite  video using\ninterrupts\n");
   TV.delay(2500);
   TV.println("My schematic:");
